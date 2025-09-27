@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:14
+    container_name: truck-signs-db
+    environment:
+      POSTGRES_DB: truck_signs_db
+      POSTGRES_USER: truck_user
+      POSTGRES_PASSWORD: truck_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    container_name: truck-signs-api
+    command: ./entrypoint.sh
+    ports:
+      - "8020:8020"
+    environment:
+      DOCKER_SECRET_KEY: "@3bw8#+e%stu3^)ouut$f8k571i^av5n232i#qvslzth(jj^w5"
+      DOCKER_DB_NAME: truck_signs_db
+      DOCKER_DB_USER: truck_user
+      DOCKER_DB_PASSWORD: truck_password
+      DOCKER_DB_HOST: db
+      DOCKER_DB_PORT: 5432
+      DOCKER_STRIPE_PUBLISHABLE_KEY: "pk_test_yourkey"
+      DOCKER_STRIPE_SECRET_KEY: "sk_test_yourkey"
+      DOCKER_EMAIL_HOST_USER: "youremail@example.com"
+      DOCKER_EMAIL_HOST_PASSWORD: "your-email-password"
+    depends_on:
+      - db
+    restart: always
+
+volumes:
+  postgres_data:
