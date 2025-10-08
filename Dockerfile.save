@@ -1,0 +1,39 @@
+# ===============================
+#   DOCKERFILE for Truck Signs API
+# ===============================
+
+# Use an official Python base image
+FROM python:3.10-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Set work directory inside container
+WORKDIR /app
+
+# Install system dependencies
+# (psycopg2 needs PostgreSQL client libraries)
+RUN apt-get update && apt-get install -y \
+    libpq-dev gcc netcat-traditional \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first (for better build cache)
+COPY requirements.txt /app/
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy project files into the container
+COPY . /app/
+
+# Copy and set the entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Expose Django's default port
+EXPOSE 8020
+
+# Run entrypoint script (handles migrations, collectstatic, etc.)
+ENTRYPOINT ["/entrypoint.sh"]
+
