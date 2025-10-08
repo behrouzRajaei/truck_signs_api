@@ -18,7 +18,6 @@ The system allows administrators to manage categories, products, lettering items
 ## Requirements
 
 - [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/)
 - [Python 3.8+ and PostgreSQL]
 
 ---
@@ -34,10 +33,42 @@ The system allows administrators to manage categories, products, lettering items
 
 2. Start the project with Docker:
 
+First, create a Docker network (only once):
+
 ```bash
-   docker-compose up --build
+   docker network create trucknet
 ```
-This will run migrations, collect static files, and start the Django server automatically.
+
+Then run PostgreSQL:
+
+```bash
+   docker run -d \
+     --name postgres_db \
+     --network trucknet \
+     -e POSTGRES_USER=truck_user \
+     -e POSTGRES_PASSWORD=truck_password \
+     -e POSTGRES_DB=truck_signs_db \
+     postgres:15
+```
+
+Build the Django app image:
+
+```bash
+   docker build -t truck_app .
+```
+
+Run the Django container:
+
+```bash
+   docker run -d \
+     --name django_app \
+     --network trucknet \
+     -p 8020:8020 \
+     --env-file .env \
+     truck_app
+```
+
+This will automatically wait for PostgreSQL, run migrations, collect static files, and start the Django server with Gunicorn.
 
 ---
 
@@ -46,7 +77,7 @@ This will run migrations, collect static files, and start the Django server auto
 ## Environment Variables
 
 - The project requires a .env file for sensitive configuration values.
-- A template is provided at .env.example).
+- A template is provided at .env.example
 
 To create your .env:
 
@@ -56,16 +87,16 @@ To create your .env:
 
 ## Minimum required variables for development:
 
-SECRET_KEY=your_django_secret_key
-DB_NAME=trucksigns_db
-DB_USER=trucksigns_user
-DB_PASSWORD=supertrucksignsuser!
-DB_HOST=localhost
-DB_PORT=5432
-STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
-STRIPE_SECRET_KEY=your_stripe_secret_key
-EMAIL_HOST_USER=your_email
-EMAIL_HOST_PASSWORD=your_email_password
+DOCKER_SECRET_KEY=your_django_secret_key
+DOCKER_DB_NAME=truck_signs_db
+DOCKER_DB_USER=truck_user
+DOCKER_DB_PASSWORD=truck_password
+DOCKER_DB_HOST=postgres_db
+DOCKER_DB_PORT=5432
+DOCKER_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+DOCKER_STRIPE_SECRET_KEY=your_stripe_secret_key
+DOCKER_EMAIL_HOST_USER=your_email
+DOCKER_EMAIL_HOST_PASSWORD=your_email_password
 
 ---
 
@@ -78,11 +109,11 @@ If you share the project, only share .env.example, not your real .env.
 
 ---
 
-# The entrypoint script (entrypoint.sh) runs automatically and executes:
+# The entrypoint.sh script runs automatically and executes:
 
 - python manage.py migrate
 - python manage.py collectstatic --noinput
-- Starts the server (Gunicorn or runserver in dev mode)
+- gunicorn truck_signs_designs.wsgi:application --bind 0.0.0.0:8020
 
 ---
 
@@ -95,7 +126,7 @@ Once Docker is up:
 To create a superuser:
 
 ```bash
-   docker-compose exec web python manage.py createsuperuser
+   docker exec -it django_app python manage.py createsuperuser
 ```
 
 Log in at:
