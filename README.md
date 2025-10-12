@@ -140,11 +140,11 @@ If you share the project, only share .env.example, not your real .env.
 
 # 7. API Endpoints
 
-The base Address is: URL:8020/api/
-For show the Category List: URL:8020/api/categories/
-For show the Product List: URL:8020/api/products/
-For show the Comments: URL:8020/api/comments/
-
+- The base Address is: URL:8020/api/
+- For show the Category List: URL:8020/api/categories/
+- For show the Product List: URL:8020/api/products/
+- For show the Comments: URL:8020/api/comments/
+- For show the lettering-item-categories: URL:8020/api/lettering-item-categories/
 
 # 8. Contributing
 
