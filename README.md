@@ -3,9 +3,19 @@
 An online store backend built with Django and Django REST Framework for selling and customizing truck vinyl signs.
 The system allows administrators to manage categories, products, lettering items, and customer orders, while exposing a REST API for frontend or external integrations.
 
----
+# Table of Contents
 
-## Features
+1. Features
+2. Prerequisites
+3. Installation
+4. Usage
+5. Security & Secrets
+6. The entrypoint.sh script runs automatically and executes
+7. API Endpoints
+8. Contributing
+9. License
+
+1. Features
 
 - Admin panel for managing categories, products, lettering items, orders, and payments
 - Customer order and payment flow integrated with Stripe
@@ -13,68 +23,80 @@ The system allows administrators to manage categories, products, lettering items
 - Environment-specific settings (development, docker, production)
 - REST API endpoints for categories, products, variations, and orders
 
----
-
-## Requirements
+2. Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/)
-- [Python 3.8+ and PostgreSQL]
 
----
+3. Installation
 
-## Installation
-
-1. Clone the repository:
+- Clone the repository:
 
 ```bash
-   git clone <REPO_URL>
-   cd truck_signs_api
+git clone <https://github.com/behrouzRajaei/truck_signs_api.git>
+cd truck_signs_api
 ```
 
-2. Start the project with Docker:
+- Start the project with Docker:
 
-First, create a Docker network (only once):
+a) First, create a Docker network (only once):
 
 ```bash
-   docker network create trucknet
+docker network create trucknet
 ```
 
-Then run PostgreSQL:
+b) Then run PostgreSQL:
 
 ```bash
-   docker run -d \
-     --name postgres_db \
-     --network trucknet \
-     -e POSTGRES_USER=truck_user \
-     -e POSTGRES_PASSWORD=truck_password \
-     -e POSTGRES_DB=truck_signs_db \
-     postgres:15
+docker run -d \
+--name postgres_db \
+--network trucknet \
+-e POSTGRES_USER=truck_user \
+-e POSTGRES_PASSWORD=truck_password \
+-e POSTGRES_DB=truck_signs_db \
+postgres:15
 ```
 
-Build the Django app image:
+c) Build the Django app image:
 
 ```bash
-   docker build -t truck_app .
+docker build -t truck_app .
 ```
 
-Run the Django container:
+d) Run the Django container:
 
 ```bash
-   docker run -d \
-     --name django_app \
-     --network trucknet \
-     -p 8020:8020 \
-     --env-file .env \
-     truck_app
+docker run -d \
+--name django_app \
+--network trucknet \
+-p 8020:8020 \
+--env-file .env \
+truck_app
+```
+
+e) Running the Application
+
+Once Docker is up:
+- Django backend will be available at: http://localhost:8020
+- Admin panel: http://localhost:8020/admin
+
+f) create a superuser:
+
+```bash
+docker exec -it django_app python manage.py createsuperuser
+```
+
+g) Log in at:
+
+```
+http://localhost:8020/admin/
 ```
 
 This will automatically wait for PostgreSQL, run migrations, collect static files, and start the Django server with Gunicorn.
 
----
 
-# Configuration
+4. Usage
 
-## Environment Variables
+# Environment Variables
 
 - The project requires a .env file for sensitive configuration values.
 - A template is provided at .env.example
@@ -82,10 +104,10 @@ This will automatically wait for PostgreSQL, run migrations, collect static file
 To create your .env:
 
 ```bash
-   cp truck_signs_api/.env.example truck_signs_api/.env
+cp truck_signs_api/.env.example truck_signs_api/.env
 ```
 
-## Minimum required variables for development:
+# Minimum required variables for development:
 
 DOCKER_SECRET_KEY=your_django_secret_key
 DOCKER_DB_NAME=truck_signs_db
@@ -98,78 +120,38 @@ DOCKER_STRIPE_SECRET_KEY=your_stripe_secret_key
 DOCKER_EMAIL_HOST_USER=your_email
 DOCKER_EMAIL_HOST_PASSWORD=your_email_password
 
----
 
-# Security & Secrets
+5. Security & Secrets
 
 Never commit your real .env file to the repository.
 The project already includes a .gitignore entry to keep .env private.
 Use the provided .env.example file as a template — copy it to .env and replace values with your own secrets.
 If you share the project, only share .env.example, not your real .env.
 
----
 
-# The entrypoint.sh script runs automatically and executes:
+6. The entrypoint.sh script runs automatically and executes:
 
 - python manage.py migrate
 - python manage.py collectstatic --noinput
 - gunicorn truck_signs_designs.wsgi:application --bind 0.0.0.0:8020
 
----
 
-# Running the Application
+7. API Endpoints
 
-Once Docker is up:
-- Django backend will be available at: http://localhost:8020
-- Admin panel: http://localhost:8020/admin
+The base Address is: URL:8020/api/
+For show the Category List: URL:8020/api/categories/
+For show the Product List: URL:8020/api/products/
+For show the Comments: URL:8020/api/comments/
 
-To create a superuser:
 
-```bash
-   docker exec -it django_app python manage.py createsuperuser
-```
-
-Log in at:
-
-```
-http://localhost:8020/admin/
-```
-
----
-
-# API Endpoints
-
-Base URL: /api/
-
-GET /categories/ → List categories
-GET /products/ → List products
-GET /product-detail/<id>/ → Product details
-POST /order/<id>/create/ → Create an order
-POST /order-payment/<id>/ → Pay for an order (Stripe)
-GET /comments/ → List comments
-POST /comment/create/ → Add a new comment
-POST /upload-customer-image/ → Upload a custom vinyl design
-
----
-
-# evelopment Notes
-
-- Project structure supports multiple environments (dev, docker, production)
-- Static and media files served via Django in development; configure a CDN or object storage for production
-- Payment flow is integrated with Stripe (test and live keys supported)
-
----
-
-# Contributing
+8. Contributing
 
 Contributions are welcome! Please fork the repo and submit pull requests.
 
----
 
-# License
+9. License
 
 MIT License
 
 This version is clean, technical, and professional — perfect for GitHub or GitLab.
 
----

@@ -2,8 +2,7 @@
 set -e
 
 # Default DB host
-#DB_HOST=${DOCKER_DB_HOST:-postgres_db}
-DB_HOST=${DOCKER_DB_HOST:-172.19.0.2}
+DB_HOST=${DOCKER_DB_HOST}
 
 # Wait for PostgreSQL to be ready
 echo "Waiting for PostgreSQL at $DB_HOST..."
