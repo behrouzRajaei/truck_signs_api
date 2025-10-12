@@ -17,7 +17,7 @@ The system allows administrators to manage categories, products, lettering items
 
 # Instructure
 
-#1. Features
+# 1. Features
 
 - Admin panel for managing categories, products, lettering items, orders, and payments
 - Customer order and payment flow integrated with Stripe
@@ -25,11 +25,11 @@ The system allows administrators to manage categories, products, lettering items
 - Environment-specific settings (development, docker, production)
 - REST API endpoints for categories, products, variations, and orders
 
-#2. Prerequisites
+# 2. Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/)
 
-#3. Installation
+# 3. Installation
 
 - Clone the repository:
 
@@ -96,7 +96,7 @@ http://localhost:8020/admin/
 This will automatically wait for PostgreSQL, run migrations, collect static files, and start the Django server with Gunicorn.
 
 
-#4. Usage
+# 4. Usage
 
 ## Environment Variables
 
@@ -123,7 +123,7 @@ DOCKER_EMAIL_HOST_USER=your_email
 DOCKER_EMAIL_HOST_PASSWORD=your_email_password
 
 
-#5. Security & Secrets
+# 5. Security & Secrets
 
 Never commit your real .env file to the repository.
 The project already includes a .gitignore entry to keep .env private.
@@ -131,14 +131,14 @@ Use the provided .env.example file as a template — copy it to .env and replace
 If you share the project, only share .env.example, not your real .env.
 
 
-#6. The entrypoint.sh script runs automatically and executes:
+# 6. The entrypoint.sh script runs automatically and executes:
 
 - python manage.py migrate
 - python manage.py collectstatic --noinput
 - gunicorn truck_signs_designs.wsgi:application --bind 0.0.0.0:8020
 
 
-#7. API Endpoints
+# 7. API Endpoints
 
 The base Address is: URL:8020/api/
 For show the Category List: URL:8020/api/categories/
@@ -146,12 +146,12 @@ For show the Product List: URL:8020/api/products/
 For show the Comments: URL:8020/api/comments/
 
 
-#8. Contributing
+# 8. Contributing
 
 Contributions are welcome! Please fork the repo and submit pull requests.
 
 
-#9. License
+# 9. License
 
 MIT License
 
