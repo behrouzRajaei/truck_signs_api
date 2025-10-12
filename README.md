@@ -15,6 +15,8 @@ The system allows administrators to manage categories, products, lettering items
 8. Contributing
 9. License
 
+# Instructure
+
 1. Features
 
 - Admin panel for managing categories, products, lettering items, orders, and payments
