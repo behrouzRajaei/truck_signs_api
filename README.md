@@ -5,15 +5,15 @@ The system allows administrators to manage categories, products, lettering items
 
 # Table of Contents
 
-1. Features
-2. Prerequisites
-3. Installation
-4. Usage
-5. Security & Secrets
-6. The entrypoint.sh script runs automatically and executes
-7. API Endpoints
-8. Contributing
-9. License
+1. [Features](#1-features)
+2. [Prerequisites](#2-prerequisites)
+3. [Installation](#3-installation)
+4. [Usage](#4-usage)
+5. [Security & Secrets](#5-security--secrets)
+6. [Entrypoint Script](#6-entrypoint-script)
+7. [API Endpoints](#7-api-endpoints)
+8. [Contributing](#8-contributing)
+9. [License](#9-license)
 
 # Instructure
 
@@ -34,7 +34,7 @@ The system allows administrators to manage categories, products, lettering items
 - Clone the repository:
 
 ```bash
-git clone <https://github.com/behrouzRajaei/truck_signs_api.git>
+git clone git@github.com:behrouzRajaei/truck_signs_api.git 
 cd truck_signs_api
 ```
 
