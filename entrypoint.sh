@@ -1,22 +1,19 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -e
 
-echo "Waiting for postgres to connect ..."
+# Default DB host
+DB_HOST=${DOCKER_DB_HOST}
 
-while ! nc -z db 5432; do
-  sleep 0.1
+# Wait for PostgreSQL to be ready
+echo "Waiting for PostgreSQL at $DB_HOST..."
+while ! pg_isready -h "$DB_HOST" -U "$DOCKER_DB_USER" > /dev/null 2>&1; do
+  sleep 1
 done
+echo "PostgreSQL is up!"
 
-echo "PostgreSQL is active"
-
+# Run migrations and collect static files
+python manage.py migrate --noinput
 python manage.py collectstatic --noinput
-python manage.py migrate
-python manage.py makemigrations
 
-gunicorn truck_signs_designs.wsgi:application --bind 0.0.0.0:8000
-
-
-
-echo "Postgresql migrations finished"
-
-python manage.py runserver
+# Start Gunicorn server
+exec gunicorn truck_signs_designs.wsgi:application --bind 0.0.0.0:8020
